@@ -6,39 +6,48 @@ const persons = [
     name: 'Jaen',
     lastname: 'Figueroa',
     age: 23,
-    country: 'Peru',
     phone: '555-555-5555',
+    country: 'Peru',
+    city: 'Arequipa',
   },
   {
     id: '2',
     name: 'Ahinara',
     lastname: 'Victorazzi',
     age: 21,
-    country: 'USA',
     phone: '555-555-5555',
+    country: 'USA',
+    city: 'Miami',
   },
   {
     id: '3',
     name: 'Foxed',
     lastname: 'Tailer',
     age: 25,
-    country: 'Canada',
     phone: '555-555-5555',
+    country: 'Canada',
+    city: 'Toronto',
   },
 ]
 
 /* HACER LAS DEFINICIONES */
 const typeDefs = gql`
+  type Address {
+    country: String!
+    city: String!
+  }
+
   type Person {
     id: ID!
     name: String!
     lastname: String!
     age: Int!
-    country: String!
     phone: String!
 
     complete: String!
     nacimiento: Int!
+
+    address: Address!
   }
 
   type Query {
@@ -59,11 +68,18 @@ const resolvers = {
     },
   },
 
-  /* agregado para Person */
   Person: {
+    /* agregar cosas que no tiene a Person */
     complete: (root) => `${root.name} ${root.lastname}`,
     nacimiento: (root) => {
       return new Date().getFullYear() - root.age
+    },
+    /* darle una forma con lo que tenemos en la db */
+    address: (root) => {
+      return {
+        country: root.country,
+        city: root.city,
+      }
     },
   },
 }
