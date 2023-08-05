@@ -5,6 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +17,7 @@
     "graphql": "^16.7.1"
   },
   "devDependencies": {
+    "nodemon": "^3.0.1",
     "prettier": "^3.0.1"
   }
 }
