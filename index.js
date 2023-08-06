@@ -1,4 +1,5 @@
 import { ApolloServer, gql } from 'apollo-server'
+import { v4 as uuid } from 'uuid'
 
 const persons = [
   {
@@ -55,6 +56,17 @@ const typeDefs = gql`
     allPersons: [Person]!
     person(name: String!): Person
   }
+
+  type Mutation {
+    addPerson(
+      name: String!
+      lastname: String!
+      age: Int!
+      phone: String!
+      country: String!
+      city: String!
+    ): Person
+  }
 `
 
 /* DEFINIR COMO SE VAN A RESOLVER LO QUE SE PIDA */
@@ -64,6 +76,15 @@ const resolvers = {
     allPersons: () => persons,
     person: (root, args) => {
       const person = persons.find((p) => p.name === args.name)
+      return person
+    },
+  },
+
+  /* MUTACIONES - cambiar datos */
+  Mutation: {
+    addPerson: (root, args) => {
+      const person = { ...args, id: uuid() }
+      persons.push(person)
       return person
     },
   },
