@@ -70,6 +70,7 @@ const typeDefs = gql`
       country: String!
       city: String!
     ): Person
+    updatePhone(name: String!, phone: String!): Person
   }
 `
 
@@ -103,6 +104,17 @@ const resolvers = {
       const person = { ...args, id: uuid() }
       persons.push(person)
       return person
+    },
+    updatePhone: (root, args) => {
+      const personIndex = persons.findIndex((p) => p.name === args.name)
+      if (personIndex === -1) return null
+
+      const person = persons[personIndex]
+
+      const updatedPerson = { ...person, phone: args.phone }
+      persons[personIndex] = updatedPerson
+
+      return updatedPerson
     },
   },
 
