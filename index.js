@@ -1,4 +1,4 @@
-import { ApolloServer, gql } from 'apollo-server'
+import { gql, ApolloServer, UserInputError } from 'apollo-server'
 import { v4 as uuid } from 'uuid'
 
 const persons = [
@@ -46,7 +46,7 @@ const typeDefs = gql`
     phone: String!
 
     complete: String!
-    nacimiento: Int!
+    birth: Int!
 
     address: Address!
   }
@@ -83,6 +83,12 @@ const resolvers = {
   /* MUTACIONES - cambiar datos */
   Mutation: {
     addPerson: (root, args) => {
+      if (persons.find((p) => p.name === args.name)) {
+        throw new UserInputError('Esta persona ya existe', {
+          invalidArgs: args.name,
+        })
+      }
+
       const person = { ...args, id: uuid() }
       persons.push(person)
       return person
@@ -90,12 +96,12 @@ const resolvers = {
   },
 
   Person: {
-    /* agregar cosas que no tiene a Person */
+    /* agregar cosas que no tiene Person */
     complete: (root) => `${root.name} ${root.lastname}`,
-    nacimiento: (root) => {
+    birth: (root) => {
       return new Date().getFullYear() - root.age
     },
-    /* darle una forma con lo que tenemos en la db */
+    /* darle una forma usando lo tenemos en la db */
     address: (root) => {
       return {
         country: root.country,
