@@ -25,7 +25,6 @@ const persons = [
     name: 'Foxed',
     lastname: 'Tailer',
     age: 25,
-    phone: '555-555-5555',
     country: 'Canada',
     city: 'Toronto',
   },
@@ -33,6 +32,11 @@ const persons = [
 
 /* HACER LAS DEFINICIONES */
 const typeDefs = gql`
+  enum YesNo {
+    YES
+    NO
+  }
+
   type Address {
     country: String!
     city: String!
@@ -43,7 +47,7 @@ const typeDefs = gql`
     name: String!
     lastname: String!
     age: Int!
-    phone: String!
+    phone: String
 
     complete: String!
     birth: Int!
@@ -53,7 +57,7 @@ const typeDefs = gql`
 
   type Query {
     personCount: Int!
-    allPersons: [Person]!
+    allPersons(phone: YesNo): [Person]!
     person(name: String!): Person
   }
 
@@ -73,7 +77,14 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     personCount: () => persons.length,
-    allPersons: () => persons,
+    allPersons: (root, args) => {
+      if (!args.phone) return persons
+
+      const byPhone = (person) =>
+        args.phone === 'YES' ? person.phone : !person.phone
+
+      return persons.filter(byPhone)
+    },
     person: (root, args) => {
       const person = persons.find((p) => p.name === args.name)
       return person
